@@ -1,6 +1,6 @@
 #!/bin/bash
 
-nic_bridge="en0"
+nic_bridge="eth0"
 
 # Init; Do not change.
 appliance=${1}
