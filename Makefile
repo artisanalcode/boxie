@@ -47,7 +47,7 @@ Tools/selenium_conf/IEDriverServer.exe:
 	cd Tools/selenium_conf && unzip IEDriverServer.zip
 
 Tools/jre-windows-i586.exe:
-	curl -j -o Tools/jre-7u75-windows-i586.exe -L -O -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/7u75-b13/jre-7u75-windows-i586.exe
+	curl -j -o Tools/jre-windows-i586.exe -L -O -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/7u75-b13/jre-7u75-windows-i586.exe
 
 Tools/firefox.exe:
 	curl -o $@ -L "https://download.mozilla.org/?product=firefox-34.0.5-SSL&os=win&lang=en-GB"

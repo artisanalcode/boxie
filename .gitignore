@@ -2,3 +2,5 @@ VMs/**/*.*
 Tools/*.exe
 Tools/*.iso
 Tools/selenium_conf/**/*.*
+
+**/*.log

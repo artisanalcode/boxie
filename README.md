@@ -1,5 +1,5 @@
-modernie_selenium
-=================
+modernie_selenium_linux
+=======================
 
 Manage modern.ie VirtualBox-Appliances with Selenium-Support
 
@@ -44,7 +44,7 @@ What it does
 What it doesn't do
 ==================
 
-  * Download modern.ie Appliances
+  * Download modern.ie Appliances (can be fetched with make fetch_vms)
   * Set up VirtualBox
 
 Getting started
@@ -189,7 +189,7 @@ To import the IE6-WinXP Appliance simply run:
 mkvm.sh VMs/IE6\ -\ WinXP.ova
 ```
 
-If you already have an IE6-WinXP-Instance - and want to recreate it - run:
+If you already have an IE6-WinXP-Instance - and want to recreate it - run (expects VM to be running):
 
 ```
 mkvm.sh VMs/IE6\ -\ WinXP.ova --delete "IE6 - WinXP"
