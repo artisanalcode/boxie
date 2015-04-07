@@ -365,7 +365,7 @@ install_chrome() {
   log "Installing Chrome..."
   #execute "VBoxManage guestcontrol '${vm_name}' copyto \"${tools_path}${chrome_exe}\" "${vm_temp}" --username 'IEUser' --password 'Passw0rd!'"
   copyto "${chrome_exe}" "${tools_path}" "${vm_temp}"
-  execute "VBoxManage guestcontrol '${vm_name}' execute --image 'C:/Windows/System32/msiexec.exe' --username 'IEUser' --password 'Passw0rd!' -- /qn /i \"${vm_temp}${chrome_exe}\""
+  execute "VBoxManage guestcontrol '${vm_name}' execute --image \"${vm_temp}${chrome_exe}\ --username 'IEUser' --password 'Passw0rd!' -- /S"
   chk error $? "Could not install Chrome"
   waiting 120
   install_chrome_driver

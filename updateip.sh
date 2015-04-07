@@ -24,19 +24,14 @@ copyto() {
   then
     echo "Local file '${2}${1}' doesn't exist"
   fi
-  execute "VBoxManage guestcontrol \"${vm_name}\" copyto \"${2}${1}\" \"${3}${1}\" --username 'IEUser' --password 'Passw0rd!'"
+  execute "VBoxManage guestcontrol '${vm_name}' copyto '${2}${1}' '${3}${1}' --username 'IEUser' --password 'Passw0rd!'"
 }
 
 get_vm_info
+
 # Create a hosts file
-if [ $(uname) == "Darwin" ]
-then
-  # This makes sense on a mac
-  ifconfig ${nic_bridge} | grep "inet " | awk '{print $2 " hubhost"}' > /tmp/hosts
-else
-  # This works on Ubuntu
-  ifconfig ${nic_bridge} | grep "inet " | awk '{print $2 " hubhost"}' | sed 's/addr://' > /tmp/hosts
-fi
+ifconfig ${nic_bridge} | grep "inet " | awk '{print $2 " hubhost"}' | sed 's/addr://' > /tmp/hosts
+
 # Send it to the VM
 copyto hosts /tmp/ "C:/Windows/System32/drivers/etc/hosts"
 
