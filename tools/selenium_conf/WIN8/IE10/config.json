@@ -1,10 +1,6 @@
 {
     "configuration": {
-        "port": 5555,
-        "register": true,
-        "registerCycle": 5000,
-        "hubPort": 4444,
-        "hubHost": "hubhost"
+        "port": 5555
     },
     "capabilities": [
         {

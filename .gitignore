@@ -1,6 +1,10 @@
-VMs/**/*.*
-Tools/*.exe
-Tools/*.iso
-Tools/selenium_conf/**/*.*
+vms/**/*.*
+
+tools/*.exe
+tools/*.iso
+
+tools/selenium_conf/**/*.zip
+tools/selenium_conf/**/*.jar
+tools/selenium_conf/**/*.exe
 
 **/*.log

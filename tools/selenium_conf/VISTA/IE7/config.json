@@ -1,27 +1,23 @@
 {
     "configuration": {
-        "port": 5555,
-        "register": true,
-        "registerCycle": 5000,
-        "hubPort": 4444,
-        "hubHost": "hubhost"
+        "port": 5555
     },
     "capabilities": [
         {
-            "platform": "WINDOWS",
+            "platform": "VISTA",
             "browserName": "internet explorer",
-            "version": 11,
+            "version": 7,
             "maxInstances": 1,
             "seleniumProtocol": "WebDriver"
         },
         {
-            "platform": "WINDOWS",
+            "platform": "VISTA",
             "browserName": "firefox",
             "maxInstances": 1,
             "seleniumProtocol": "WebDriver"
         },
         {
-            "platform": "WINDOWS",
+            "platform": "VISTA",
             "browserName": "chrome",
             "maxInstances": 1,
             "seleniumProtocol": "WebDriver"

@@ -1,16 +1,12 @@
 {
     "configuration": {
-        "port": 5555,
-        "register": true,
-        "registerCycle": 5000,
-        "hubPort": 4444,
-        "hubHost": "hubhost"
+        "port": 5555
     },
     "capabilities": [
         {
             "platform": "WINDOWS",
             "browserName": "internet explorer",
-            "version": 8,
+            "version": 11,
             "maxInstances": 1,
             "seleniumProtocol": "WebDriver"
         },
