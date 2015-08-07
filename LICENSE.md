@@ -1,5 +1,5 @@
-Copyright for portions of project are held by Denis Witt, 2014, as part of project modernie_selenium.
-All other copyright for project BoxIE are held by Juan Garcia, 2015.
+Copyright for portions of this project are held by Denis Witt, 2014, as part of the project modernie_selenium.
+All other copyright for this project, BoxIE, is held by Juan Garcia, 2015.
 
 ---
 

@@ -58,7 +58,7 @@ Getting started
   * Fetch other dependencies: ```make fetch```
   * Edit the Selenium Config-Files (```./tools/Selenium_conf/*/config.json```).
   * Edit ```config.sh``` (see below for details).
-  * Run ```mkvm.sh /path/to/your/appliance/foobar.ova```.
+  * Run ```create.sh /path/to/your/appliance/foobar.ova```.
 
 Fetching the Appliances
 =======================
@@ -184,13 +184,13 @@ make fetch
 To import the IE10-Win7 Appliance simply run (notice spaces have been escaped):
 
 ```
-mkvm.sh vms/IE10\ -\ Win7.ova
+create.sh vms/IE10\ -\ Win7.ova
 ```
 
 If you already have an IE10-Win7 instance (must be running),  and want to recreate it, run:
 
 ```
-mkvm.sh VMs/IE10\ -\ Win7.ova --delete "IE10 - Win7"
+create.sh VMs/IE10\ -\ Win7.ova --delete "IE10 - Win7"
 ```
 
 Notice the spaces escaped for path, and quotes for virtual machine name.
