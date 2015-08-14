@@ -224,8 +224,8 @@ set_rdp_config() {
 # Internal: Helper-Functions to disable UAC (called by disable_uac)
 ex_disable_uac_w7() {
   log "Mounting Disk..."
-  VBoxManage storageattach "${vm_name}" --storagectl "IDE" --port 1 --device 0 --type dvddrive --medium "${tools_path}${deuac_iso}"
-  chk fatal $? "Could not mount ${tools_path}${deuac_iso}"
+  VBoxManage storageattach "${vm_name}" --storagectl "IDE" --port 1 --device 0 --type dvddrive --medium "${tools_path}${deuac_filename}"
+  chk fatal $? "Could not mount ${tools_path}${deuac_filename}"
   log "Disabling UAC..."
   VBoxManage startvm "${vm_name}" --type headless
   chk fatal $? "Could not start VM to disable UAC"
@@ -233,7 +233,7 @@ ex_disable_uac_w7() {
   check_shutdown
   log "Removing Disk..."
   VBoxManage storageattach "${vm_name}" --storagectl "IDE" --port 1 --device 0 --type dvddrive --medium none
-  chk fatal $? "Could not unmount ${deuac_iso}"
+  chk fatal $? "Could not unmount ${deuac_filename}"
 }
 
 ex_disable_uac_wv() {
@@ -304,12 +304,10 @@ create_temp_path() {
 # Apply registry changes to configure Internet Explorer settings (Protected-Mode, Cache)
 set_ie_config() {
   log "Apply IE Protected-Mode Settings..."
-  #execute "VBoxManage guestcontrol '${vm_name}' copyto \"${ie_protectedmode_reg}\" "${temp_path}" --username 'IEUser' --password 'Passw0rd!'"
-  copyto "${ie_protectedmode_reg}" "$tools_path" "$temp_path"
+  copyto "${ie_protectedmode_reg_filename}" "$tools_path" "$temp_path"
   execute "VBoxManage guestcontrol '${vm_name}' execute --image 'C:\\Windows\\Regedit.exe' --username 'IEUser' --password 'Passw0rd!' -- /s '${temp_path}ie_protectedmode.reg'"
   chk error $? "Could not apply IE Protected-Mode-Settings"
   log "Disabling IE-Cache..."
-  #execute "VBoxManage guestcontrol '${vm_name}' copyto \"${ie_cache_reg}\" "${temp_path}" --username 'IEUser' --password 'Passw0rd!'"
   copyto ie_disablecache.reg "${tools_path}" "${temp_path}"
   execute "VBoxManage guestcontrol '${vm_name}' execute --image 'C:\\Windows\\Regedit.exe' --username 'IEUser' --password 'Passw0rd!' -- /s '${temp_path}ie_disablecache.reg'"
   chk error $? "Could not disable IE-Cache"
@@ -318,9 +316,8 @@ set_ie_config() {
 # Install Java (required by Selenium); We don't use --wait-exit as it may cause trouble with XP-VMs, instead we just wait some time to ensure the Java-Installer can finish.
 install_java() {
   log "Installing Java..."
-  #execute "VBoxManage guestcontrol '${vm_name}' copyto \"${tools_path}${java_exe}\" "${temp_path}" --username 'IEUser' --password 'Passw0rd!'"
-  copyto "${java_exe}" "${tools_path}" "${temp_path}"
-  execute "VBoxManage guestcontrol '${vm_name}' execute --image \"${temp_path}${java_exe}\" --username 'IEUser' --password 'Passw0rd!' -- /s"
+  copyto "${java_filename}" "${tools_path}" "${temp_path}"
+  execute "VBoxManage guestcontrol '${vm_name}' execute --image \"${temp_path}${java_filename}\" --username 'IEUser' --password 'Passw0rd!' -- /s"
   chk error $? "Could not install Java"
   waiting 120
 }
@@ -328,8 +325,8 @@ install_java() {
 # Install Firefox.
 install_firefox() {
   log "Installing Firefox..."
-  copyto "${firefox_exe}" "${tools_path}" "${temp_path}"
-  execute "VBoxManage guestcontrol '${vm_name}' execute --image \"${temp_path}${firefox_exe}\" --username 'IEUser' --password 'Passw0rd!' -- /S"
+  copyto "${firefox_filename}" "${tools_path}" "${temp_path}"
+  execute "VBoxManage guestcontrol '${vm_name}' execute --image \"${temp_path}${firefox_filename}\" --username 'IEUser' --password 'Passw0rd!' -- /S"
   chk error $? "Could not install Firefox"
   waiting 120
 }
@@ -337,7 +334,6 @@ install_firefox() {
 # Install Chrome-Driver for Selenium
 install_chrome_driver() {
   log "Installing Chrome Driver..."
-  #execute "VBoxManage guestcontrol '${vm_name}' copyto \"${tools_path}${selenium_path}chromedriver.exe\" C:/Windows/system32/ --username 'IEUser' --password 'Passw0rd!'"
   copyto chromedriver.exe "${tools_path}${selenium_path}" "C:/Windows/system32/"
   chk error $? "Could not install Chrome Driver"
   waiting 5
@@ -346,25 +342,25 @@ install_chrome_driver() {
 # Install Chrome.
 install_chrome() {
   log "Installing Chrome..."
-  #execute "VBoxManage guestcontrol '${vm_name}' copyto \"${tools_path}${chrome_exe}\" "${temp_path}" --username 'IEUser' --password 'Passw0rd!'"
-  copyto "${chrome_exe}" "${tools_path}" "${temp_path}"
-  execute "VBoxManage guestcontrol '${vm_name}' execute --image \"${temp_path}${chrome_exe}\" --username 'IEUser' --password 'Passw0rd!' -- /S"
+  #execute "VBoxManage guestcontrol '${vm_name}' copyto \"${tools_path}${chrome_filename}\" "${temp_path}" --username 'IEUser' --password 'Passw0rd!'"
+  copyto "${chrome_filename}" "${tools_path}" "${temp_path}"
+  execute "VBoxManage guestcontrol '${vm_name}' execute --image \"${temp_path}${chrome_filename}\" --username 'IEUser' --password 'Passw0rd!' -- /S"
   chk error $? "Could not install Chrome"
   waiting 120
   install_chrome_driver
 }
 
 # Install ngnix
-install_nginx() {
-  log "Installing Ngnix..."
+copy_nginx() {
+  log "Copying Ngnix to guest machine..."
 
-  copyto "*.*" "${tools_path}${nginx_folder}" "C:/${nginx_folder}"
+  copyto "${ngnix_filename}" "${tools_path}" "C:/${temp_path}"
 }
 
 # Internal: Helper-Functions to Install Selenium (called by install_selenium)
 start_selenium_xp() {
   #execute "VBoxManage guestcontrol '${vm_name}' copyto \"${tools_path}${selenium_path}selenium.bat\" 'C:/Documents and Settings/All Users/Start Menu/Programs/Startup/' --username 'IEUser' --password 'Passw0rd!'"
-  copyto "selenium.bat" "${tools_path}${selenium_path}" 'C:/Documents and Settings/All Users/Start Menu/Programs/Startup/'
+  copyto "selenium.bat" "${tools_path}${selenium_path}/" 'C:/Documents and Settings/All Users/Start Menu/Programs/Startup/'
   chk error $? "Could not copy Selenium-Startup-File"
 }
 
@@ -584,7 +580,7 @@ install_java
 install_firefox
 install_chrome
 install_selenium
-install_nginx
+copy_nginx
 configure_clipboard
 activate_vm
 

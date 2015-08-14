@@ -8,14 +8,16 @@ log_path="logs/"
 tools_path="$(pwd)/tools/"
 selenium_path="selenium_conf/"
 #  | --> Filenames
-deuac_iso="deuac.iso"
-chrome_exe="chrome.exe"
-firefox_exe="firefox.exe"
-nginx_folder="nginx-1.8.0"
-java_exe="jre-windows-i586.exe"
+deuac_filename="deuac.iso"
+chrome_filename="chrome.exe"
+firefox_filename="firefox.exe"
+nginx_filename="nginx.zip"
+java_filename="jre-windows-i586.exe"
+selenium_filename="selenium-server-standalone.jar"
+# | ---> Registry filenames
 ie_cache_reg="ie_disablecache.reg"
 ie_protectedmode_reg="ie_protectedmode.reg"
-selenium_jar="selenium-server-standalone.jar"
+
 #  |
 #  | Guest machine
 #  |--> Config
