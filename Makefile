@@ -58,3 +58,10 @@ tools/firefox.exe:
 
 tools/chrome.exe:
 	curl -o $@ -L "https://dl.google.com/update2/installers/ChromeStandaloneSetup.exe"
+
+tools/nginx:
+	curl -o nginx-1.8.0.zip -L http://nginx.org/download/nginx-1.8.0.zip
+	mkdir tools/nginx-1.8.0 || true
+	unzip nginx-1.8.0.zip
+	mv nginx-1.8.0 tools
+	rm nginx-1.8.0.zip

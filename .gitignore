@@ -3,6 +3,7 @@ vms/**/*.*
 tools/*.exe
 tools/*.iso
 
+tools/nginx*
 tools/selenium_conf/**/*.zip
 tools/selenium_conf/**/*.jar
 tools/selenium_conf/**/*.exe
