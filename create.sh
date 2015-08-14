@@ -359,14 +359,12 @@ copy_nginx() {
 
 # Internal: Helper-Functions to Install Selenium (called by install_selenium)
 start_selenium_xp() {
-  #execute "VBoxManage guestcontrol '${vm_name}' copyto \"${tools_path}${selenium_path}selenium.bat\" 'C:/Documents and Settings/All Users/Start Menu/Programs/Startup/' --username 'IEUser' --password 'Passw0rd!'"
-  copyto "selenium.bat" "${tools_path}${selenium_path}/" 'C:/Documents and Settings/All Users/Start Menu/Programs/Startup/'
+  copyto "${selenium_helper_filename}" "${tools_path}${selenium_path}/" 'C:/Documents and Settings/All Users/Start Menu/Programs/Startup/'
   chk error $? "Could not copy Selenium-Startup-File"
 }
 
 start_selenium_w7() {
-  #execute "VBoxManage guestcontrol '${vm_name}' copyto \"${tools_path}${selenium_path}selenium.bat\" 'C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup/' --username 'IEUser' --password 'Passw0rd!'"
-  copyto "selenium.bat" "${tools_path}${selenium_path}" 'C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup/'
+  copyto "${selenium_helper_filename}" "${tools_path}${selenium_path}" 'C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup/'
   chk error $? "Could not copy Selenium-Startup-File"
 }
 

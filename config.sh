@@ -14,10 +14,10 @@ firefox_filename="firefox.exe"
 nginx_filename="nginx.zip"
 java_filename="jre-windows-i586.exe"
 selenium_filename="selenium-server-standalone.jar"
-# | ---> Registry filenames
-ie_cache_reg="ie_disablecache.reg"
-ie_protectedmode_reg="ie_protectedmode.reg"
-
+selenium_helper_filename="selenium.bat"
+#  | ----> Registry filenames
+ie_cache_reg_filename="ie_disablecache.reg"
+ie_protectedmode_reg_filename="ie_protectedmode.reg"
 #  |
 #  | Guest machine
 #  |--> Config
