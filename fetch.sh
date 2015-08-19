@@ -23,7 +23,8 @@ source config.sh
 
 # Print proper usage
 usage() {
-    echo "fetch.sh <-a|--all-dependencies> <-l|--log true|false>"
+    echo "Usage:"
+    echo "fetch.sh <-v|--virtual-machines> <-d|--dependencies> <-l|--log>"
 }
 
 # Print help
@@ -32,16 +33,15 @@ help() {
     echo "for testing with Selenium."
     echo "Would you like help?"
     echo ""
-    echo "Usage:"
     usage
     echo ""
     echo "Arguments:"
     echo "-v|--virtual-machine        Will download chosen virtual machine."
-    echo "-a|--all-dependencies       Will download all dependencies, excluding virtual machines."
-    echo "-l|--log <true|false>       Optional. Save results in a log file. Default: true"
+    echo "-d|--dependencies           Will download all dependencies, excluding virtual machines."
+    echo "-l|--log                    Optional. Save results in a log file."
     echo ""
     echo "Example"
-    echo "fetch.sh -v -a -l false"
+    echo "fetch.sh -v -a -l"
     echo ""
 }
 
@@ -236,7 +236,6 @@ ARGS=$(getopt -o vdlh -l "virtual-machine,dependencies,log,help" -n "fetch.sh" -
 
 # Feedback on wrong arguments.
 if [ $? -ne 0 ]; then
-    echo -e "\nInvalid option: -$OPTARG" >&2
     usage
     exit -1
 fi
