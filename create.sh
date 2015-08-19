@@ -296,28 +296,28 @@ create_temp_path() {
 
 # Create C:\Temp\; Most Functions who copy files to the VM are relying on this folder and will fail is he doesn't exists.
 create_temp_path() {
-    log "Creating ${temp_path}..."
-    execute "VBoxManage guestcontrol '${vm_name}' createdirectory '${temp_path}' --username 'IEUser' --password 'Passw0rd!'"
-    chk fatal $? "Could not create ${temp_path}"
+    log "Creating ${vm_temp_path}..."
+    execute "VBoxManage guestcontrol '${vm_name}' createdirectory '${vm_temp_path}' --username 'IEUser' --password 'Passw0rd!'"
+    chk fatal $? "Could not create ${vm_temp_path}"
 }
 
 # Apply registry changes to configure Internet Explorer settings (Protected-Mode, Cache)
 set_ie_config() {
     log "Apply IE Protected-Mode Settings..."
     copyto "${ie_protectedmode_reg_filename}" "$tools_path" "$temp_path"
-    execute "VBoxManage guestcontrol '${vm_name}' execute --image 'C:\\Windows\\Regedit.exe' --username 'IEUser' --password 'Passw0rd!' -- /s '${temp_path}ie_protectedmode.reg'"
+    execute "VBoxManage guestcontrol '${vm_name}' execute --image 'C:\\Windows\\Regedit.exe' --username 'IEUser' --password 'Passw0rd!' -- /s '${vm_temp_path}ie_protectedmode.reg'"
     chk error $? "Could not apply IE Protected-Mode-Settings"
     log "Disabling IE-Cache..."
-    copyto ie_disablecache.reg "${tools_path}" "${temp_path}"
-    execute "VBoxManage guestcontrol '${vm_name}' execute --image 'C:\\Windows\\Regedit.exe' --username 'IEUser' --password 'Passw0rd!' -- /s '${temp_path}ie_disablecache.reg'"
+    copyto ie_disablecache.reg "${tools_path}" "${vm_temp_path}"
+    execute "VBoxManage guestcontrol '${vm_name}' execute --image 'C:\\Windows\\Regedit.exe' --username 'IEUser' --password 'Passw0rd!' -- /s '${vm_temp_path}ie_disablecache.reg'"
     chk error $? "Could not disable IE-Cache"
 }
 
 # Install Java (required by Selenium); We don't use --wait-exit as it may cause trouble with XP-VMs, instead we just wait some time to ensure the Java-Installer can finish.
 install_java() {
     log "Installing Java..."
-    copyto "${java_filename}" "${tools_path}" "${temp_path}"
-    execute "VBoxManage guestcontrol '${vm_name}' execute --image \"${temp_path}${java_filename}\" --username 'IEUser' --password 'Passw0rd!' -- /s"
+    copyto "${java_filename}" "${tools_path}" "${vm_temp_path}"
+    execute "VBoxManage guestcontrol '${vm_name}' execute --image \"${vm_temp_path}${java_filename}\" --username 'IEUser' --password 'Passw0rd!' -- /s"
     chk error $? "Could not install Java"
     waiting 120
 }
@@ -325,8 +325,8 @@ install_java() {
 # Install Firefox.
 install_firefox() {
     log "Installing Firefox..."
-    copyto "${firefox_filename}" "${tools_path}" "${temp_path}"
-    execute "VBoxManage guestcontrol '${vm_name}' execute --image \"${temp_path}${firefox_filename}\" --username 'IEUser' --password 'Passw0rd!' -- /S"
+    copyto "${firefox_filename}" "${tools_path}" "${vm_temp_path}"
+    execute "VBoxManage guestcontrol '${vm_name}' execute --image \"${vm_temp_path}${firefox_filename}\" --username 'IEUser' --password 'Passw0rd!' -- /S"
     chk error $? "Could not install Firefox"
     waiting 120
 }
@@ -342,9 +342,9 @@ install_chrome_driver() {
 # Install Chrome.
 install_chrome() {
     log "Installing Chrome..."
-    #execute "VBoxManage guestcontrol '${vm_name}' copyto \"${tools_path}${chrome_filename}\" "${temp_path}" --username 'IEUser' --password 'Passw0rd!'"
-    copyto "${chrome_filename}" "${tools_path}" "${temp_path}"
-    execute "VBoxManage guestcontrol '${vm_name}' execute --image \"${temp_path}${chrome_filename}\" --username 'IEUser' --password 'Passw0rd!' -- /S"
+    #execute "VBoxManage guestcontrol '${vm_name}' copyto \"${tools_path}${chrome_filename}\" "${vm_temp_path}" --username 'IEUser' --password 'Passw0rd!'"
+    copyto "${chrome_filename}" "${tools_path}" "${vm_temp_path}"
+    execute "VBoxManage guestcontrol '${vm_name}' execute --image \"${vm_temp_path}${chrome_filename}\" --username 'IEUser' --password 'Passw0rd!' -- /S"
     chk error $? "Could not install Chrome"
     waiting 120
     install_chrome_driver
@@ -354,7 +354,7 @@ install_chrome() {
 copy_nginx() {
     log "Copying Ngnix to guest machine..."
 
-    copyto "${ngnix_filename}" "${tools_path}" "C:/${temp_path}"
+    copyto "${ngnix_filename}" "${tools_path}" "C:/${vm_temp_path}"
 }
 
 # Internal: Helper-Functions to Install Selenium (called by install_selenium)
@@ -403,11 +403,11 @@ config_selenium_w8() {
 ie11_driver_reg() {
     if [ "${vm_ie}" = "IE11" ]; then
         log "Copy ie11_win32.reg..."
-        #execute "VBoxManage guestcontrol '${vm_name}' copyto \"${tools_path}ie11_win32.reg\" "${temp_path}" --username 'IEUser' --password 'Passw0rd!'"
-        copyto ie11_win32.reg "${tools_path}" "${temp_path}"
+        #execute "VBoxManage guestcontrol '${vm_name}' copyto \"${tools_path}ie11_win32.reg\" "${vm_temp_path}" --username 'IEUser' --password 'Passw0rd!'"
+        copyto ie11_win32.reg "${tools_path}" "${vm_temp_path}"
         chk skip $? "Could not copy ie11_win32.reg"
         log "Setting ie11_win32.reg..."
-        execute "VBoxManage guestcontrol '${vm_name}' execute --image 'C:\\Windows\\Regedit.exe' --username 'IEUser' --password 'Passw0rd!' -- /s '${temp_path}ie11_win32.reg'"
+        execute "VBoxManage guestcontrol '${vm_name}' execute --image 'C:\\Windows\\Regedit.exe' --username 'IEUser' --password 'Passw0rd!' -- /s '${vm_temp_path}ie11_win32.reg'"
         chk skip $? "Could not set ie11_win32.reg"
     fi
 }
@@ -515,11 +515,11 @@ rename_vm() {
     echo 'c:\windows\system32\wbem\wmic.exe computersystem where caption="'${vm_orig_name}'" call rename "'${vm_pretty_name}'"' > /tmp/rename.bat
     chk skip $? "Could not create rename.bat"
     log "Copy rename.bat..."
-    #execute "VBoxManage guestcontrol '${vm_name}' copyto '/tmp/rename.bat' "${temp_path}" --username 'IEUser' --password 'Passw0rd!'"
-    copyto 'rename.bat' '/tmp/' "${temp_path}"
+    #execute "VBoxManage guestcontrol '${vm_name}' copyto '/tmp/rename.bat' "${vm_temp_path}" --username 'IEUser' --password 'Passw0rd!'"
+    copyto 'rename.bat' '/tmp/' "${vm_temp_path}"
     chk skip $? "Could not copy rename.bat"
     log "Launch rename.bat..."
-    execute "VBoxManage guestcontrol '${vm_name}' execute --image '${temp_path}rename.bat' --username 'IEUser' --password 'Passw0rd!'"
+    execute "VBoxManage guestcontrol '${vm_name}' execute --image '${vm_temp_path}rename.bat' --username 'IEUser' --password 'Passw0rd!'"
     chk skip $? "Could not change Hostname"
     waiting 5
 }
