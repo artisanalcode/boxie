@@ -563,8 +563,10 @@ activate_vm() {
     execute_os_specific ex_activate_vm
 }
 
+# Basic install
 get_vm_info
 import_vm
+# Config VM
 create_log_path
 set_network_config
 set_rdp_config
@@ -574,11 +576,13 @@ disable_firewall
 create_temp_path
 rename_vm
 set_ie_config
+# Install dependencies
 install_java
 install_firefox
 install_chrome
 install_selenium
 copy_nginx
+# Additional steps
 configure_clipboard
 activate_vm
 

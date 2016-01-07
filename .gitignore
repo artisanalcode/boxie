@@ -1,5 +1,7 @@
 vms/**/*.*
 
+# Registry files (.reg) are versioned, must not be ignored
+# MD files are versioned, must not be ignored
 tools/*.exe
 tools/*.iso
 

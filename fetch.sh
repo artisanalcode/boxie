@@ -21,31 +21,10 @@
 # Access configuration variables
 source config.sh
 
-# Print proper usage
-usage() {
-    echo "Usage:"
-    echo "fetch.sh <-v|--virtual-machines> <-d|--dependencies> <-l|--log>"
-}
-
-# Print help
-help() {
-    echo "Looks like you are trying to fetch dependencies to setup a Windows virtual machine (Virtual Box)"
-    echo "for testing with Selenium."
-    echo "Would you like help?"
-    echo ""
-    usage
-    echo ""
-    echo "Arguments:"
-    echo "-v|--virtual-machine        Will download chosen virtual machine."
-    echo "-d|--dependencies           Will download all dependencies, excluding virtual machines."
-    echo "-l|--log                    Optional. Save results in a log file."
-    echo ""
-    echo "Example"
-    echo "fetch.sh -v -a -l"
-    echo ""
-}
-
 # Global variables
+# -- Current OS
+# -- Defaults to Linux
+current_os="LINUX"
 # -- Colors
 # -- @see https://en.wikipedia.org/wiki/ANSI_escape_code
 RED="\033[0;31m"
@@ -58,7 +37,42 @@ MAGENTA="\033[0;35m"
 date_prefix=$(date +%Y%m%d%H%M%S)
 # -- Options
 log_enabled=false
+# Print proper usage
+usage() {
+    echo "Usage:"
+    if [[ $current_os = "OSX" ]]; then
+        current_os="OSX"
+        echo "fetch.sh <-v|--virtual-machines> <-d|--dependencies> <-l|--log>"
+    else
+        echo "fetch.sh <-v> <-d> <-l>"
+    fi
+}
 
+# Print help
+help() {
+    echo "Looks like you are trying to fetch dependencies to setup a Windows virtual machine (Virtual Box)"
+    echo "for testing with Selenium."
+    echo "Would you like help?"
+    echo ""
+    usage
+    echo ""
+    echo "Arguments:"
+
+    if [[ $current_os = "OSX" ]]; then
+        echo "-v                          Will download chosen virtual machine."
+        echo "-d                          Will download all dependencies, excluding virtual machines."
+        echo "-l                          Optional. Save results in a log file."
+    else
+        echo "-v|--virtual-machine        Will download chosen virtual machine."
+        echo "-d|--dependencies           Will download all dependencies, excluding virtual machines."
+        echo "-l|--log                    Optional. Save results in a log file."
+    fi
+
+    echo ""
+    echo "Example"
+    echo "fetch.sh -v -a -l"
+    echo ""
+}
 
 # Write Logfile and STDOUT.
 log() {
@@ -66,6 +80,12 @@ log() {
     then
         echo ${1} | tee -a "${log_path}fetch.${date_prefix}.log"
     fi
+}
+
+# Displays message(s) when no arguments are passed to the script
+display_missing_arguments_message() {
+    echo "Please provide missing argument(s)."
+    usage
 }
 
 # Fetch dependencies
@@ -121,7 +141,7 @@ fetch_dependencies() {
 
 fetch_virtual_machine() {
     # Define variables
-    resource=${selected_os}_${select_browser}
+    resource=${current_os}_${selected_os}_${select_browser}
     resource_filename=${resource}_FILENAME
     resource_url=${resource}_URL
 
@@ -230,63 +250,8 @@ select_browser() {
     echo ""
 }
 
-# Execute getopt.
-# @see http://www.bahmanm.com/blogs/command-line-options-how-to-parse-in-bash-using-getopt
-ARGS=$(getopt -o vdlh -l "virtual-machine,dependencies,log,help" -n "fetch.sh" -- "$@");
-
-# Feedback on wrong arguments.
-if [ $? -ne 0 ]; then
-    usage
-    exit -1
-fi
-
-# Execute eval set for proper format
-eval set -- "$ARGS";
-
-# Display title bar
-echo -e "${CYAN}BoxIE (pronounced bok-see)"
-echo -e "${MAGENTA}=========================="
-echo -e "${NOCOLOR}"
-
-# Parse options
-while true; do
-    case $1 in
-        -v|--virtual-machine)
-            virtual_machine=true
-            echo -e "Will download virtual machine...               ${GREEN}[OK]${NOCOLOR}"
-            shift
-            ;;
-        -d|--dependencies)
-            dependencies=true
-            echo -e "Will download all dependencies...              ${GREEN}[OK]${NOCOLOR}"
-            shift
-            ;;
-        -l|--log)
-            log_enabled=true
-            echo -e "Log...                                   ${YELLOW}[DISABLED]${NOCOLOR}"
-            shift
-            ;;
-        -h|--help)
-            shift
-            help
-            exit -1
-            ;;
-        --)
-            shift
-            break
-            ;;
-    esac
-done
-
-# Provide feedback if there are are missing arguments, end exit script.
-if [ -z "$dependencies" ] && [ -z "$virtual_machine" ]; then
-    echo "Please provide missing argument(s)."
-    usage
-    exit -1
-fi
-
-# Virtual machine assistant
-if [ "$virtual_machine" = true ]; then
+# Starts an assistant to select the VM the user wishes to download
+start_virtual_machine_assistant() {
     echo -e "Virtual machine download assistant...     ${GREEN}[STARTED]${NOCOLOR}"
     echo ""
     echo "Looks like you are trying to to download Windows virtual machine (Virtual Box)."
@@ -295,16 +260,131 @@ if [ "$virtual_machine" = true ]; then
 
     select_os
     select_browser
-fi
+}
 
-# Fetch all dependencies
-if [ "$dependencies" = true ]; then
-    echo -e "Dependencies download                     ${GREEN}[STARTED]${NOCOLOR}"
-    fetch_dependencies
-fi
+# Identify OS (getopts and getopt will not work the same in MacOS and Linux)
+# Important... This can be extracted into functions, but "getopts and "getopt" will need additional work.
+if [[ $OSTYPE = darwin* ]]; then
+    current_os="OSX"
+    # MAC OPTS
+    while getopts "vdlh" OPT; do
+        case "$OPT" in
+            v)
+                virtual_machine=true
+                echo -e "Will download virtual machine...               ${GREEN}[OK]${NOCOLOR}"
+                ;;
+            d)
+                dependencies=true
+                echo -e "Will download all dependencies...              ${GREEN}[OK]${NOCOLOR}"
+                ;;
+            l)
+                log_enabled=true
+                echo -e "Log...                                   ${YELLOW}[DISABLED]${NOCOLOR}"
+                ;;
+            h)
+                help
+                exit -1
+                ;;
+             \?)
+                echo -e "Option -${BOLD}$OPTARG${NORM} not allowed."
+                help
+                ;;
+        esac
+    done
 
-# Fetch selected virtual machine
-if [ "$os_selected" = true ] && [ "$browser_selected" = true ];then
-    echo -e "Virtual machine download                  ${GREEN}[STARTED]${NOCOLOR}"
-    fetch_virtual_machine
+    # Provide feedback if there are are missing arguments, end exit script.
+    if [ -z "$dependencies" ] && [ -z "$virtual_machine" ]; then
+        display_missing_arguments_message
+        exit -1
+    fi
+
+    # Virtual machine assistant
+    if [ "$virtual_machine" = true ]; then
+        start_virtual_machine_assistant
+    fi
+
+    # Fetch all dependencies
+    if [ "$dependencies" = true ]; then
+        echo -e "Dependencies download                     ${GREEN}[STARTED]${NOCOLOR}"
+        fetch_dependencies
+    fi
+
+    # Fetch selected virtual machine
+    if [ "$os_selected" = true ] && [ "$browser_selected" = true ];then
+        echo -e "Virtual machine download                  ${GREEN}[STARTED]${NOCOLOR}"
+        fetch_virtual_machine
+    fi
+else
+    current_os="LINUX"
+    # LINUX OPTS
+    # Execute getopt.
+    # @see http://www.bahmanm.com/blogs/command-line-options-how-to-parse-in-bash-using-getopt
+    ARGS=$(getopt -o vdlh -l "virtual-machine,dependencies,log,help" -n "fetch.sh" -- "$@");
+
+    # Feedback on wrong arguments.
+    if [ $? -ne 0 ]; then
+        usage
+        exit -1
+    fi
+
+    # Execute eval set for proper format
+    eval set -- "$ARGS";
+
+    # Display title bar
+    echo -e "${CYAN}BoxIE (pronounced bok-see)"
+    echo -e "${MAGENTA}=========================="
+    echo -e "${NOCOLOR}"
+
+    # Parse options
+    while true; do
+        case $1 in
+            -v|--virtual-machine)
+                virtual_machine=true
+                echo -e "Will download virtual machine...               ${GREEN}[OK]${NOCOLOR}"
+                shift
+                ;;
+            -d|--dependencies)
+                dependencies=true
+                echo -e "Will download all dependencies...              ${GREEN}[OK]${NOCOLOR}"
+                shift
+                ;;
+            -l|--log)
+                log_enabled=true
+                echo -e "Log...                                   ${YELLOW}[DISABLED]${NOCOLOR}"
+                shift
+                ;;
+            -h|--help)
+                shift
+                help
+                exit -1
+                ;;
+            --)
+                shift
+                break
+                ;;
+        esac
+    done
+
+    # Provide feedback if there are are missing arguments, end exit script.
+    if [ -z "$dependencies" ] && [ -z "$virtual_machine" ]; then
+        display_missing_arguments_message
+        exit -1
+    fi
+
+    # Virtual machine assistant
+    if [ "$virtual_machine" = true ]; then
+        start_virtual_machine_assistant
+    fi
+
+    # Fetch all dependencies
+    if [ "$dependencies" = true ]; then
+        echo -e "Dependencies download                     ${GREEN}[STARTED]${NOCOLOR}"
+        fetch_dependencies
+    fi
+
+    # Fetch selected virtual machine
+    if [ "$os_selected" = true ] && [ "$browser_selected" = true ];then
+        echo -e "Virtual machine download                  ${GREEN}[STARTED]${NOCOLOR}"
+        fetch_virtual_machine
+    fi
 fi
