@@ -5,6 +5,8 @@ source config.sh
 appliance=${1}
 vm_name=False
 vm_pretty_name=False
+# @todo Renable when error checking is refactored.
+# shellcheck disable=SC2034
 fatal=False
 error=False
 warning=False
@@ -53,13 +55,17 @@ chk() {
 
 # Write Logfile and STDOUT.
 log() {
-  echo ${1} | tee -a "${log_path}${vm_pretty_name}.log"
+  echo ${1} | tee -a "${LOG_PATH}${vm_pretty_name}.log"
 }
 
 get_vm_info
 
 # Create a hosts file
-ifconfig ${nic_bridge} | grep "inet " | awk '{print $2 " localhost"}' | sed 's/addr://' > /tmp/hosts
+if [[ $current_os = "OSX" ]]; then
+    ifconfig ${MAC_VM_NIC_BRIDGE} | grep "inet " | awk '{print $2 " localhost"}' | sed 's/addr://' > /tmp/hosts
+else
+    ifconfig ${LINUX_VM_NIC_BRIDGE} | grep "inet " | awk '{print $2 " localhost"}' | sed 's/addr://' > /tmp/hosts
+fi
 
 # Send it to the VM
 copyto hosts /tmp/ "C:/Windows/System32/drivers/etc/hosts"
