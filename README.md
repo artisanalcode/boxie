@@ -109,13 +109,13 @@ vm_path="vms/"
 Memory (RAM) for Windows Vista, 7 and 8.x virtual machines, in MB.
 
 ```
-vm_mem="768"
+VM_MEM="768"
 ```
 
 Memory (RAM) for Windows XP virtual machines, in MB.
 
 ```
-vm_mem_xp="512"
+VM_MEM_XP="512"
 ```
 
 Filename for deuac.iso (UAC disabler).
@@ -133,7 +133,7 @@ tools_path="tools/"
 Path to your Selenium config files (relative to tools). It's important that you keep the folder structure below this point, otherwise the config will not be copied to the virtual machines.
 
 ```
-selenium_path="selenium_conf/"
+TOOLS_PATH="selenium_conf/"
 ```
 
 Filename for ```ie_disablecache.reg``` (Disables Internet Explorer Cache).
@@ -151,7 +151,7 @@ ie_protectedmode_reg="Tools/ie_protectedmode.reg"
 Path to the temporary log files.
 
 ```
-log_path="/logs"
+LOG_PATH="/logs"
 ```
 
 Username of Virtual Box user.
