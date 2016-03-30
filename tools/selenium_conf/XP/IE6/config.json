@@ -1,0 +1,26 @@
+{
+    "configuration": {
+        "port": 5555
+    },
+    "capabilities": [
+        {
+            "platform": "XP",
+            "browserName": "internet explorer",
+            "version": 6,
+            "maxInstances": 1,
+            "seleniumProtocol": "WebDriver"
+        },
+        {
+            "platform": "XP",
+            "browserName": "firefox",
+            "maxInstances": 1,
+            "seleniumProtocol": "WebDriver"
+        },
+        {
+            "platform": "XP",
+            "browserName": "chrome",
+            "maxInstances": 1,
+            "seleniumProtocol": "WebDriver"
+        }
+    ]
+}

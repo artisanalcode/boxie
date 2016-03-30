@@ -1,212 +1,220 @@
-modernie_selenium
+BoxIE (pronounced bok-see)
+=======================
+
+BoxIE(pronounced "bok-see", sort-of like Clippy!) Automate the installation of Modern IE virtual boxes and Selenium support.
+
+This series of scripts allows you to download, install and setup virtual Windows machines using images provided by Microsoft (http://modern.ie/tools/vms). Since these images "expire" every few months it is very practical to automate the download, installation and configuration.
+
+BoxIE (pronounced bok-see) is a fork of modernie_selenium. It focuses on Linux environment (vs. Mac OS), simplifies and reduces the scope of the project, and adds a cute mascot.
+
+Requirements
 =================
 
-Manage modern.ie VirtualBox-Appliances with Selenium-Support
-
-This script allows to delete and create virtual Windows-Machines using Images from http://www.modern.ie for automating Browser-Testing with Selenium.
-
-As the modern.ie-Machines refuses to run more than 30-90 Days (at least for more than an hour) we remove the machines on a regular basis and recreate the original Appliance with all changes needed to run Selenium.
-
-Use it with your favored test runner (maybe [Karma](http://karma-runner.github.io/) or [Nightwatch.js](http://nightwatchjs.org)) to automate JavaScript tests in real browsers on your own Selenium Grid. Other WebDriver language bindings (Python, Java) should work as well.
-
-Prerequisites
-=================
-
-  * modern.ie VBox-Appliances
-  * VirtualBox (tested with 4.3)
+  * VirtualBox (tested with 4.3 on Ubuntu)
   * VirtualBox Extension Pack
-  * Selenium-Hub
-  * deuac.iso
-  * IEDriverServer (for Selenium)
-  * chromedriver (for Selenium)
-  * Java JRE (for Selenium)
-  * Selenium Standalone Server
-  * Optional: phpVirtualBox
+
+What will be installed in the virtual machine
+=================
+
+  * Selenium Standalone Server.
+  * Deuac.iso (User Account Control disabler).
+  * IEDriverServer (for Selenium).
+  * Chrome.
+  * Chromedriver (for Selenium).
+  * Java JRE (for Selenium).
 
 What it does
 =================
 
-  * Import modern.ie Appliances to VirtualBox
-  * Configure VM Network-Settings
-  * Configure VM RDP-Port-Setting (VRDE)
-  * Configure VM Clipboard behaviour
-  * Disable UAC
-  * Disable Windows-Firewall
-  * Rename the VM (Hostname)
-  * Configures IE Protected-Mode to work with Selenium
-  * Disables IE Cache
-  * Install Java
-  * Install Firefox
-  * Install Chrome
-  * Install Selenium
-  * Reports via E-Mail
+  * Downloads  necessary tools (Selenium and Selenium Drivers, Deuac, etc.).
+  * Imports Modern.ie appliances into Virtual Box.
+  * Configures virtual machine network settings.
+  * Configures virtual machine RDP port setting (VRDE).
+  * Configures virtual machine clipboard behavior.
+  * Disables UAC(User Account Control).
+  * Disables virtual machine firewall.
+  * Renames the virtual machine (hostname).
+  * Configures IE protected-mode (to work with Selenium).
+  * Disables IE cache in virtual machine.
+  * Installs  Java in virtual machine.
+  * Installs Firefox in virtual machine.
+  * Installs Chrome in virtual machine.
+  * Installs Selenium virtual machine.
 
-What it doesn't do
+To do
 ==================
 
-  * Download modern.ie Appliances
-  * Set up VirtualBox
+  * Create script to download and install Virtual Box.
+  * Automatize Virtual Box configuration.
+  * Parameterize virtual box download URLs.
+  *  Refactor ```Makefile``` into Bash script.
 
 Getting started
 ===============
 
+  * Install and configure Virtual Box.
   * Clone this repository.
-  * Download the Appliance(s) you want to use from http://www.modern.ie/ and put the extracted OVA-Files on your Server. You can use the Makefile (see below)
-  * Get the Windows Java (JRE) Installer and Selenium Server Standalone (JAR) and put them beside the OVA-Files (or somewhere else).
-  * Get deuac.iso (https://github.com/tka/SeleniumBox/blob/master/deuac.iso).
-  * Get IEDriverServer.exe (https://code.google.com/p/selenium/wiki/InternetExplorerDriver) and put it in ```./Tools/selenium_conf/```.
-  * Get chromedriver.exe (https://code.google.com/p/selenium/wiki/ChromeDriver) and put it in ```./Tools/selenium_conf/```.
-  * Get Chrome and Firefox, place both in ```./Tools/```.
-  * Edit the Selenium Config-Files (```./Tools/Selenium_conf/*/config.json```).
-  * Edit ```config.sh``` so it fits your needs (see below for details).
-  * Run ```mkvm.sh /path/to/your/appliance/foobar.ova```.
+  * Fetch virtual machine images:  ```make fetch_vms```
+  * Fetch other dependencies: ```make fetch```
+  * Edit the Selenium Config-Files (```./tools/Selenium_conf/*/config.json```).
+  * Edit ```config.sh``` (see below for details).
+  * Run ```create.sh /path/to/your/appliance/foobar.ova```.
 
 Fetching the Appliances
 =======================
 
-You can get a lot of the VMs (currently IE8-11 on Windows 7) using this command:
+You can get virtual machines directly from Microsoft (this script is configured for IE8-11 on Windows 7) using this command:
 
 ```
 make fetch_vms
 ```
 
-Please note: The makefile will load modern.ie Appliances for Mac. Adjust the Download-URLs if you need the Linux-Versions.
+Please note: The ```Makefile``` will fetch Windows/IE virtual machine images for Linux.
 
 Configure
 =========
 
-Adjust ```config.sh``` to your needs. See below for details.
+Adjust ```config.sh``` to your needs.
 
 If you use the Makefile to get the binary files then you shouldn't have to alter the config script.
 
-By default the Script assumes that your VirtualBox-Machines are placed in ```VMs/``` and that the script is run by the User the script is run as. All supplemental files should be placed in ```Tools/``` but you can configure different paths.
+By default the script assumes that your VirtualBox-Machines are placed in ```vms/``` and that the script is run by the User the script is run as. All supplemental files should be placed in ```tools/``` .
 
-To do so simply edit ```config.sh```:
+These are the configuration settings:
+
+Filename of your Java installer.
 
 ```
 java_exe="jre-windows-i586.exe"
 ```
 
-Filename of your Java-Installer.
+Filename of your Selenium server.
 
 ```
 selenium_jar="selenium-server-standalone.jar"
 ```
 
-Filename of your Selenium-Server.
+Name of your network interface (to use as bridge for your virtual machine).
 
 ```
 nic_bridge="eth0"
 ```
 
-Name of your Network-Interface to use as bridge for your VM.
+Path for your virtual machines.
 
 ```
-vm_path="VMs/"
+vm_path="vms/"
 ```
 
-Path where to put your VMs.
+Memory (RAM) for Windows Vista, 7 and 8.x virtual machines, in MB.
 
 ```
 vm_mem="768"
 ```
 
-Amount of memory (RAM) for Windows Vista, 7 and 8.x VMs in MB.
+Memory (RAM) for Windows XP virtual machines, in MB.
 
 ```
 vm_mem_xp="512"
 ```
 
-Amount of memory (RAM) for Windows XP VMs in MB.
+Filename for deuac.iso (UAC disabler).
 
 ```
-deuac_iso="Tools/deuac.iso"
+deuac_iso="deuac.iso"
 ```
 
-Path and filename for deuac.iso (a bootable CD-Image to disable UAC so we can install Java without Problems).
+Path to tools folder (dependencies to install, scripts, helpers, etc.)
 
 ```
-tools_path="Tools/"
+tools_path="tools/"
 ```
 
-Path to ```java_exe```, ```firefox_exe``` and ```chrome_exe``` (Location of Installers on VM-Host).
+Path to your Selenium config files (relative to tools). It's important that you keep the folder structure below this point, otherwise the config will not be copied to the virtual machines.
 
 ```
-selenium_path="Tools/selenium_conf/"
+selenium_path="selenium_conf/"
 ```
 
-Path to your Selenium-Config-Files. It's important that you keep the folder structure below this point, otherwise the config will not be copied to the VMs (or the wrong Config goes to the wrong Machines).
+Filename for ```ie_disablecache.reg``` (Disables Internet Explorer Cache).
 
 ```
-ie_cache_reg="Tools/ie_disablecache.reg"
+ie_cache_reg="ie_disablecache.reg"
 ```
 
-Path and filename to ```ie_disablecache.reg``` (Disables Internet Explorer Cache).
+Filename for ```ie_protectedmode.reg``` (Enables Protected Mode for all IE Security Zones).
 
 ```
 ie_protectedmode_reg="Tools/ie_protectedmode.reg"
 ```
 
-Path and filename to ```ie_protectedmode.reg``` (Enables Protected Mode for all IE Security Zones).
+Path to the temporary log files.
 
 ```
-log_path=""
+log_path="/logs"
 ```
 
-Path to the (temporary) Logfile.
+Username of Virtual Box user.
 
 ```
 vbox_user="${USER}"
 ```
 
-Username of VirtualBox-User.
-
-```
-mailto="root@example.com"
-```
-
-E-Mail-Adress to send logfile to.
+Create a snapshot after all changes are made.
 
 ```
 create_snapshot=False
 ```
 
-If ```True``` a snapshot will be created after all changes have been made.
-
-Selenium Config / Hub Hostname
-==============================
-
-The supplied Selenium-Node-Configs (see ```Tools/selenium_conf/*/config.json```) assumes the Hostname ```hubhost``` for your Selenium-Hub. So you should set up your hostfiles/DNS-Services accordingly or change ```"hubHost": "hubhost"```, in all needed ```config.json``` files.
-
-Check out ```updateip.sh``` if you want to modify the Hostfiles (change ```nic_bridge``` if needed; be aware that the VBox-Host is expected to be your Selenium-Hub as well).
-
 Usage
 =====
 
-To import the IE6-WinXP Appliance simply run:
+To fetch the virtual machine image for a Windows 7, Internet Explorer 10 combo:
 
 ```
-mkvm.sh VMs/IE6\ -\ WinXP.ova
+make vms/IE10\ -\ Win7.ova
 ```
 
-If you already have an IE6-WinXP-Instance - and want to recreate it - run:
+To fetch all other dependencies:
 
 ```
-mkvm.sh VMs/IE6\ -\ WinXP.ova --delete "IE6 - WinXP"
+make fetch
 ```
 
-We recommend to use a CronJob to recreate the VMs on a regular basis. See ```mkvm_cronjob```. To avoid too much load on the Host we use a Wrapper-Script ```mkvm_cron.sh``` so that only one Appliance gets imported after another.
+To import the IE10-Win7 Appliance simply run (notice spaces have been escaped):
+
+```
+create.sh vms/IE10\ -\ Win7.ova
+```
+
+If you already have an IE10-Win7 instance (must be running),  and want to recreate it, run:
+
+```
+create.sh VMs/IE10\ -\ Win7.ova --delete "IE10 - Win7"
+```
+
+Notice the spaces escaped for path, and quotes for virtual machine name.
+
+Additionally, you can set a ```hosts``` file on your Windows guest to point ```localhost``` (on the guest) to your host's IP. Beware of the issues this might cause.
+
+```
+updateip.sh vms/IE10\ -\ Win7.ova
+```
+
+We recommend creating a cronjob or other automatization script to recreate virtual machines before their expiration.
 
 Known Problems
 ==============
 
-XP-Machines doesn't set their new hostname automatically. You can use ```C:\Temp\rename.bat``` to set the correct name. Restart the VM afterwards. This is only needed if you run more than one instance of the same Appliance.
+XP-Machines don't set their new hostname automatically. You can use ```C:\Temp\rename.bat``` to set the correct name. Restart the virtual machine afterwards. This is only needed if you run more than one instance of the same appliance.
 
-In the Spotlight
+
+
+From modernie_selenium's README.md
 ================
 
+###In the Spotlight###
 Thanks a lot for mentioning modernie_selenium!
-
   * Automated Testing by Ben Emmons<br>
     http://itsummit.arizona.edu/sites/default/files/2014/emmons-ben-automated-testing-final.pdf
   * Testen von Rich-Web-UI (German) by Mark Michaelis<br>
@@ -216,9 +224,7 @@ Thanks a lot for mentioning modernie_selenium!
   * Japanese JavaScript Blog<br>
     http://jser.info/2015/01/13/6to5-jspm-refactoring-javascript/
 
-Acknowledgements
-================
-
+###Acknowledgements###
   * deuac.iso comes from https://github.com/tka/SeleniumBox
   * Inspired by https://github.com/xdissent/ievms
   * http://modern.ie is a Service offered by Microsoft, so thanks for that.

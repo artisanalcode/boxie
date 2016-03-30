@@ -1,0 +1,26 @@
+{
+    "configuration": {
+        "port": 5555
+    },
+    "capabilities": [
+        {
+            "platform": "WIN8",
+            "browserName": "internet explorer",
+            "version": 11,
+            "maxInstances": 1,
+            "seleniumProtocol": "WebDriver"
+        },
+        {
+            "platform": "WIN8",
+            "browserName": "firefox",
+            "maxInstances": 1,
+            "seleniumProtocol": "WebDriver"
+        },
+        {
+            "platform": "WIN8",
+            "browserName": "chrome",
+            "maxInstances": 1,
+            "seleniumProtocol": "WebDriver"
+        }
+    ]
+}
