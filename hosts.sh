@@ -53,7 +53,7 @@ chk() {
 
 # Write Logfile and STDOUT.
 log() {
-  echo ${1} | tee -a "${log_path}${vm_pretty_name}.log"
+  echo ${1} | tee -a "${LOG_PATH}${vm_pretty_name}.log"
 }
 
 get_vm_info
