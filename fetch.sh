@@ -78,7 +78,7 @@ help() {
 log() {
     if [ "$log_enabled" = true ];
     then
-        echo ${1} | tee -a "${log_path}fetch.${date_prefix}.log"
+        echo ${1} | tee -a "${LOG_PATH}fetch.${date_prefix}.log"
     fi
 }
 
@@ -97,36 +97,36 @@ fetch() {
 }
 
 fetch_selenium() {
-    fetch ${selenium_filename} ${tools_path}${selenium_path} ${selenium_url}
+    fetch ${SELENIUM_FILENAME} ${TOOLS_PATH}${SELENIUM_PATH} ${SELENIUM_URL}
 }
 
 fetch_deuac() {
-    fetch ${deuac_filename} ${tools_path} ${deuac_url}
+    fetch ${DEUAC_FILENAME} ${TOOLS_PATH} ${DEUAC_URL}
 }
 
 fetch_web_driver_IE() {
-    fetch ${ie_driver_filename} ${tools_path}${selenium_path} ${ie_driver_url}
-    unzip ${tools_path}${selenium_path}${ie_driver_filename} -d ${tools_path}${selenium_path}
+    fetch ${IE_DRIVER_FILENAME} ${TOOLS_PATH}${SELENIUM_PATH} ${IE_DRIVER_URL}
+    unzip ${TOOLS_PATH}${SELENIUM_PATH}${IE_DRIVER_FILENAME} -d ${TOOLS_PATH}${SELENIUM_PATH}
 }
 
 fetch_java() {
     # Need to improve fetch method
-    log "Will fetch ${java_filename} from http://download.oracle.com/otn-pub/java/jdk/7u75-b13/"
-    echo -e "Downloading: ${java_filename}"
-    curl -# -j -o ${tools_path}${java_filename} -L -O -H "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/7u75-b13/jre-7u75-windows-i586.exe"
+    log "Will fetch ${JAVA_FILENAME} from http://download.oracle.com/otn-pub/java/jdk/7u75-b13/"
+    echo -e "Downloading: ${JAVA_FILENAME}"
+    curl -# -j -o ${TOOLS_PATH}${JAVA_FILENAME} -L -O -H "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/7u75-b13/jre-7u75-windows-i586.exe"
 }
 
 fetch_firefox() {
-    fetch ${firefox_filename} ${tools_path} ${firefox_url}
+    fetch ${FIREFOX_FILENAME} ${TOOLS_PATH} ${FIREFOX_URL}
 }
 
 fetch_chrome() {
-    fetch ${chrome_filename} ${tools_path} ${chrome_url}
+    fetch ${CHROME_FILENAME} ${TOOLS_PATH} ${CHROME_URL}
 }
 
 fetch_nginx(){
-    fetch ${nginx_filename} ${tools_path} ${nginx_url}
-    # Will not unzip since VBoxmage won't copy whole folders from host to guest
+
+    fetch ${NGINX_FILENAME} ${TOOLS_PATH} ${NGINX_URL}
 }
 
 fetch_dependencies() {
@@ -145,14 +145,17 @@ fetch_virtual_machine() {
     resource_filename=${resource}_FILENAME
     resource_url=${resource}_URL
 
-    mkdir -p "${vms_path}"
+    mkdir -p "${VMS_PATH}"
 
     # Will initiate download and concatenate files
     log "Will ${resource} fetch from ${!resource}"
 
     curl -# -O -L "${!resource_url}"
-    cat "${!resource_filename}"* > "${vms_path}${!resource_filename}"
+    cat "${!resource_filename}"* > "${VMS_PATH}${!resource_filename}"
     rm "${!resource_filename}"*
+
+    log "Will unzip ${VMS_PATH}${!resource_filename} to ${VMS_PATH}"
+    unzip "${VMS_PATH}${!resource_filename}" -d "${VMS_PATH}"
 }
 
 # Virtual machine Assistant
@@ -212,12 +215,11 @@ select_os() {
 # Select a browser for your OS
 select_browser() {
     echo "Please select an Internet Explorer/Edge version."
-    choices=None
+    options=None
 
     # Adjust browser selection based on OS version
     if [ "${os_selected}" = true ] && [ "${selected_os}" = "XP" ];then
         options=("6" "8")
-        choices=("6" "8")
     elif [ "${os_selected}" = true ] && [ "${selected_os}" = "VISTA" ]; then
         options=("7")
     elif [ "${os_selected}" = true ] && [ "${selected_os}" = "SEVEN" ]; then
@@ -252,6 +254,11 @@ select_browser() {
 
 # Starts an assistant to select the VM the user wishes to download
 start_virtual_machine_assistant() {
+    # Display title bar
+    echo -e "${CYAN}BoxIE (pronounced bok-see)"
+    echo -e "${MAGENTA}=========================="
+    echo -e "${NOCOLOR}"
+
     echo -e "Virtual machine download assistant...     ${GREEN}[STARTED]${NOCOLOR}"
     echo ""
     echo "Looks like you are trying to to download Windows virtual machine (Virtual Box)."
@@ -329,11 +336,6 @@ else
 
     # Execute eval set for proper format
     eval set -- "$ARGS";
-
-    # Display title bar
-    echo -e "${CYAN}BoxIE (pronounced bok-see)"
-    echo -e "${MAGENTA}=========================="
-    echo -e "${NOCOLOR}"
 
     # Parse options
     while true; do

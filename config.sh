@@ -1,35 +1,41 @@
+#!/bin/bash
+
+# If using shellcheck add -e SC2034 to disable rule SC2034.
+
 # Configuration
 #  |
 #  |Host Machiche
 #  |--> Config
-log=true
-owner="${USER}"
+OWNER="${USER}"
+SHORT_WAIT=5
+LONG_WAIT=120
+STANDARD_WAIT=60
 #  |--> Paths/Folders
-vms_path="vms/"
-log_path="logs/"
-tools_path="$(pwd)/tools/"
-selenium_path="selenium_conf/"
+VMS_PATH="vms/"
+LOG_PATH="logs/"
+TOOLS_PATH="$(pwd)/tools/"
+SELENIUM_PATH="selenium_conf/"
 #  |--> Filenames
-nginx_filename="nginx.zip"
-deuac_filename="deuac.iso"
-chrome_filename="chrome.exe"
-firefox_filename="firefox.exe"
-java_filename="jre-windows-i586.exe"
-selenium_helper_filename="selenium.bat"
-ie_driver_filename="IEDriverServer.zip"
-selenium_filename="selenium-server-standalone.jar"
+NGINX_FILENAME="nginx.zip"
+DEUAC_FILENAME="deuac.iso"
+CHROME_FILENAME="chrome.exe"
+FIREFOX_FILENAME="firefox.exe"
+JAVA_FILENAME="jre-windows-i586.exe"
+SELENIUM_HELPER_FILENAME="selenium.bat"
+IE_DRIVER_FILENAME="IEDriverServer.zip"
+SELENIUM_FILENAME="selenium-server-standalone.jar"
 #  |----> Registry filenames
-ie_cache_reg_filename="ie_disablecache.reg"
-ie_protectedmode_reg_filename="ie_protectedmode.reg"
+IE_CACHE_REG_FILENAME="ie_disablecache.reg"
+IE_PROTECTEDMODE_REG_FILENAME="ie_protectedmode.reg"
 #  |
 #  |Remote Resources
 #  |--> Dependencies URLs
-nginx_url="http://nginx.org/download/nginx-1.8.0.zip"
-deuac_url="https://github.com/tka/SeleniumBox/blob/master/deuac.iso?raw=true"
-chrome_url="https://dl.google.com/update2/installers/ChromeStandaloneSetup.exe"
-firefox_url="https://download.mozilla.org/?product=firefox-34.0.5-SSL&os=win&lang=en-GB"
-ie_driver_url="http://selenium-release.storage.googleapis.com/2.44/IEDriverServer_Win32_2.44.0.zip"
-selenium_url="http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
+NGINX_URL="http://nginx.org/download/nginx-1.8.0.zip"
+DEUAC_URL="https://github.com/tka/SeleniumBox/blob/master/deuac.iso?raw=true"
+CHROME_URL="https://dl.google.com/update2/installers/ChromeStandaloneSetup.exe"
+FIREFOX_URL="https://download.mozilla.org/?product=firefox-34.0.5-SSL&os=win&lang=en-GB"
+IE_DRIVER_URL="http://selenium-release.storage.googleapis.com/2.44/IEDriverServer_Win32_2.44.0.zip"
+SELENIUM_URL="http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
 #  |--> Virtual Machines URLs
 #  |-----> Win XP & 7
 #  |--------> FOR LINUX
@@ -62,7 +68,7 @@ OSX_SEVEN_8_URL="http://virtualization.modern.ie/vhd/VMBuild_20141027/VirtualBox
 OSX_SEVEN_9_FILENAME="IE9.Win7.For.Windows.VirtualBox.zip"
 OSX_SEVEN_9_URL="http://virtualization.modern.ie/vhd/VMBuild_20141027/VirtualBox/IE9/Windows/${OSX_SEVEN_9_FILENAME}{.001,.002,.003,.004}"
 OSX_SEVEN_10_FILENAME="IE10.Win7.For.Windows.VirtualBox.zip"
-OSX_="http://virtualization.modern.ie/vhd/VMBuild_20141027/VirtualBox/IE10/Windows/${OSX_SEVEN_10_FILENAME}{.001,.002,.003,.004}"
+OSX_SEVEN_10_URL="http://virtualization.modern.ie/vhd/VMBuild_20141027/VirtualBox/IE10/Windows/${OSX_SEVEN_10_FILENAME}{.001,.002,.003,.004}"
 OSX_SEVEN_11_FILENAME="IE11.Win7.For.Windows.VirtualBox.zip"
 OSX_SEVEN_11_URL="http://virtualization.modern.ie/vhd/VMBuild_20141027/VirtualBox/IE11/Windows/${OSX_SEVEN_11_FILENAME}{.001,.002,.003,.004}"
 #  |-----> Win 8 & 8.1
@@ -86,9 +92,10 @@ OSX_TEN_EDGE_URL="http://az792536.vo.msecnd.net/vms/VMBuild_20150801/VirtualBox/
 #  |
 #  |Guest Machine
 #  |--> Config
-vm_mem="1024"
-vm_mem_xp="512"
-vm_nic_bridge="eth0"
-vm_create_snapshot=False
+VM_MEM="1024"
+VM_MEM_XP="512"
+LINUX_VM_NIC_BRIDGE="eth0"
+MAC_VM_NIC_BRIDGE="en0"
+VM_CREATE_SNAPSHOT=False
 #  |--> Paths
-vm_temp_path="C:/Temp/"
+VM_TEMP_PATH="C:/Temp/"
