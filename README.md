@@ -1,32 +1,23 @@
 BoxIE (pronounced bok-see)
 =======================
 
-BoxIE(pronounced "bok-see", sort-of like Clippy!) Automate the installation of Modern IE virtual boxes and Selenium support.
+BoxIE(pronounced "bok-see", sort-of like Clippy!) automate the installation of Modern IE virtual boxes and Selenium support.
 
 This series of scripts allows you to download, install and setup virtual Windows machines using images provided by Microsoft (http://modern.ie/tools/vms). Since these images "expire" every few months it is very practical to automate the download, installation and configuration.
 
-BoxIE (pronounced bok-see) is a fork of modernie_selenium. It focuses on Linux environment (vs. Mac OS), simplifies and reduces the scope of the project, and adds a cute mascot.
+BoxIE (pronounced bok-see) is a fork of modernie_selenium. It focuses on multi-environment support (Linux and Mac OS), friendly UI (as much as possible for a shell script). And adds a cute mascot.
 
 Requirements
 =================
 
-  * VirtualBox (tested with 4.3 on Ubuntu)
-  * VirtualBox Extension Pack
+  * VirtualBox (tested with 5.0.16 on Mac OS X).
 
-What will be installed in the virtual machine
-=================
-
-  * Selenium Standalone Server.
-  * Deuac.iso (User Account Control disabler).
-  * IEDriverServer (for Selenium).
-  * Chrome.
-  * Chromedriver (for Selenium).
-  * Java JRE (for Selenium).
 
 What it does
 =================
 
-  * Downloads  necessary tools (Selenium and Selenium Drivers, Deuac, etc.).
+  * Downloads virtual machines from MS Modern.IE
+  * Downloads  dependencies (Selenium and Selenium Drivers, Deuac, etc.).
   * Imports Modern.ie appliances into Virtual Box.
   * Configures virtual machine network settings.
   * Configures virtual machine RDP port setting (VRDE).
@@ -40,178 +31,72 @@ What it does
   * Installs Firefox in virtual machine.
   * Installs Chrome in virtual machine.
   * Installs Selenium virtual machine.
+  * Installs Selenium drivers on virtual machine.
 
+:warning: A bug on Virtual Box prevents the `create.sh` script from successfully installing dependencies on the virtual machine. We will update as soon as a fix is available. 
+
+What will be installed in the virtual machine
+=================
+
+  * Selenium Standalone Server.
+  * Deuac.iso (User Account Control disabler).
+  * IEDriverServer (for Selenium).
+  * Chrome.
+  * Chromedriver (for Selenium).
+  * Java JRE (for Selenium).
+  * Firefox.
+  * Nginx (only copied to machine, must install manually).
+  
+  
 To do
 ==================
 
-  * Create script to download and install Virtual Box.
-  * Automatize Virtual Box configuration.
-  * Parameterize virtual box download URLs.
-  *  Refactor ```Makefile``` into Bash script.
+  * Refactor `hosts.sh` script.
+  * Improve UI/UX for `create.sh` script.
+  * Create "unifying" script to call create right after fetch.
 
 Getting started
 ===============
 
   * Install and configure Virtual Box.
   * Clone this repository.
-  * Fetch virtual machine images:  ```make fetch_vms```
-  * Fetch other dependencies: ```make fetch```
-  * Edit the Selenium Config-Files (```./tools/Selenium_conf/*/config.json```).
-  * Edit ```config.sh``` (see below for details).
-  * Run ```create.sh /path/to/your/appliance/foobar.ova```.
+  * Run ```./fetch.sh -v -d``` to fetch virtual machine images.
+  * Run ```create.sh /path/to/your/appliance/foobar.ova``` to auto-configure/install dependencies.
 
 Fetching the Appliances
 =======================
 
-You can get virtual machines directly from Microsoft (this script is configured for IE8-11 on Windows 7) using this command:
+If you only want to get virtual machine images:
 
 ```
-make fetch_vms
+./fetch.sh -v
 ```
 
-Please note: The ```Makefile``` will fetch Windows/IE virtual machine images for Linux.
+The script will detect your OS (Mac OS X or Linux).
 
 Configure
 =========
 
-Adjust ```config.sh``` to your needs.
+Adjust ```config.sh``` to your needs. There are already default settings and the names are pretty self explanatory.
 
-If you use the Makefile to get the binary files then you shouldn't have to alter the config script.
 
-By default the script assumes that your VirtualBox-Machines are placed in ```vms/``` and that the script is run by the User the script is run as. All supplemental files should be placed in ```tools/``` .
-
-These are the configuration settings:
-
-Filename of your Java installer.
-
-```
-java_exe="jre-windows-i586.exe"
-```
-
-Filename of your Selenium server.
-
-```
-selenium_jar="selenium-server-standalone.jar"
-```
-
-Name of your network interface (to use as bridge for your virtual machine).
-
-```
-nic_bridge="eth0"
-```
-
-Path for your virtual machines.
-
-```
-vm_path="vms/"
-```
-
-Memory (RAM) for Windows Vista, 7 and 8.x virtual machines, in MB.
-
-```
-VM_MEM="768"
-```
-
-Memory (RAM) for Windows XP virtual machines, in MB.
-
-```
-VM_MEM_XP="512"
-```
-
-Filename for deuac.iso (UAC disabler).
-
-```
-deuac_iso="deuac.iso"
-```
-
-Path to tools folder (dependencies to install, scripts, helpers, etc.)
-
-```
-tools_path="tools/"
-```
-
-Path to your Selenium config files (relative to tools). It's important that you keep the folder structure below this point, otherwise the config will not be copied to the virtual machines.
-
-```
-TOOLS_PATH="selenium_conf/"
-```
-
-Filename for ```ie_disablecache.reg``` (Disables Internet Explorer Cache).
-
-```
-ie_cache_reg="ie_disablecache.reg"
-```
-
-Filename for ```ie_protectedmode.reg``` (Enables Protected Mode for all IE Security Zones).
-
-```
-ie_protectedmode_reg="Tools/ie_protectedmode.reg"
-```
-
-Path to the temporary log files.
-
-```
-LOG_PATH="/logs"
-```
-
-Username of Virtual Box user.
-
-```
-vbox_user="${USER}"
-```
-
-Create a snapshot after all changes are made.
-
-```
-create_snapshot=False
-```
-
-Usage
-=====
-
-To fetch the virtual machine image for a Windows 7, Internet Explorer 10 combo:
-
-```
-make vms/IE10\ -\ Win7.ova
-```
-
-To fetch all other dependencies:
-
-```
-make fetch
-```
-
-To import the IE10-Win7 Appliance simply run (notice spaces have been escaped):
-
-```
-create.sh vms/IE10\ -\ Win7.ova
-```
-
-If you already have an IE10-Win7 instance (must be running),  and want to recreate it, run:
-
-```
-create.sh VMs/IE10\ -\ Win7.ova --delete "IE10 - Win7"
-```
-
-Notice the spaces escaped for path, and quotes for virtual machine name.
-
-Additionally, you can set a ```hosts``` file on your Windows guest to point ```localhost``` (on the guest) to your host's IP. Beware of the issues this might cause.
-
-```
-updateip.sh vms/IE10\ -\ Win7.ova
-```
-
-We recommend creating a cronjob or other automatization script to recreate virtual machines before their expiration.
 
 Known Problems
 ==============
 
+Issues with `VBoxManage guestcontrol copyto` prevent the create script from properly installing dependencies. The bug is acknowledged by VirtualBox team. As soon as a fix is available we will update documentation.
+
 XP-Machines don't set their new hostname automatically. You can use ```C:\Temp\rename.bat``` to set the correct name. Restart the virtual machine afterwards. This is only needed if you run more than one instance of the same appliance.
 
 
-
-From modernie_selenium's README.md
+Acknowledgements
 ================
+Thanks to @bernhard-appdirect for the digital version(`.ai`) of the BoxIE mascot.
+
+
+Legacy
+================
+BoxIE is a fork of the original project [modernie_selenium](https://github.com/conceptsandtraining/modernie_selenium) this content is from their original README.md.
 
 ###In the Spotlight###
 Thanks a lot for mentioning modernie_selenium!
