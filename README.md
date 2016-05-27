@@ -127,13 +127,13 @@ deuac_iso="deuac.iso"
 Path to tools folder (dependencies to install, scripts, helpers, etc.)
 
 ```
-tools_path="tools/"
+TOOLS_PATH="tools/"
 ```
 
 Path to your Selenium config files (relative to tools). It's important that you keep the folder structure below this point, otherwise the config will not be copied to the virtual machines.
 
 ```
-selenium_path="selenium_conf/"
+SELENIUM_PATH="selenium_conf/"
 ```
 
 Filename for ```ie_disablecache.reg``` (Disables Internet Explorer Cache).
@@ -151,7 +151,7 @@ ie_protectedmode_reg="Tools/ie_protectedmode.reg"
 Path to the temporary log files.
 
 ```
-log_path="/logs"
+LOG_PATH="/logs"
 ```
 
 Username of Virtual Box user.
