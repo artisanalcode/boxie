@@ -1,25 +1,27 @@
 #!/bin/bash
-
-# If using shellcheck add -e SC2034 to disable rule SC2034.
-
+# shellcheck disable=SC2034
+# Can ignore "<variable> appears unused. Verify it or export it.", variables are used outside of file.
+# Brackets used to disable SC2034 unused warning.
+{
 # Configuration
 #  |
 #  |Host Machiche
 #  |--> Config
+DO_LOG=true
 OWNER="${USER}"
-SHORT_WAIT=5
-LONG_WAIT=120
-STANDARD_WAIT=60
 #  |--> Paths/Folders
 VMS_PATH="vms/"
 LOG_PATH="logs/"
+TEMP_PATH="/tmp/"
 TOOLS_PATH="$(pwd)/tools/"
 SELENIUM_PATH="selenium_conf/"
 #  |--> Filenames
 NGINX_FILENAME="nginx.zip"
 DEUAC_FILENAME="deuac.iso"
+RENAME_FILENAME="rename.bat"
 CHROME_FILENAME="chrome.exe"
 FIREFOX_FILENAME="firefox.exe"
+
 JAVA_FILENAME="jre-windows-i586.exe"
 SELENIUM_HELPER_FILENAME="selenium.bat"
 IE_DRIVER_FILENAME="IEDriverServer.zip"
@@ -32,7 +34,8 @@ IE_PROTECTEDMODE_REG_FILENAME="ie_protectedmode.reg"
 #  |--> Dependencies URLs
 NGINX_URL="http://nginx.org/download/nginx-1.8.0.zip"
 DEUAC_URL="https://github.com/tka/SeleniumBox/blob/master/deuac.iso?raw=true"
-CHROME_URL="https://dl.google.com/update2/installers/ChromeStandaloneSetup.exe"
+# @TODO Update. This installer fails to properly install Chrome.
+CHROME_URL="https://dl.google.com/chrome/install/standalonesetup.exe"
 FIREFOX_URL="https://download.mozilla.org/?product=firefox-34.0.5-SSL&os=win&lang=en-GB"
 IE_DRIVER_URL="http://selenium-release.storage.googleapis.com/2.44/IEDriverServer_Win32_2.44.0.zip"
 SELENIUM_URL="http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
@@ -84,18 +87,27 @@ OSX_EIGHT_ONE_11_FILENAME="IE11.Win8.1.For.Windows.VirtualBox.zip"
 OSX_EIGHT_ONE_11_URL="http://virtualization.modern.ie/vhd/VMBuild_20141027/VirtualBox/IE11/Windows/${OSX_EIGHT_ONE_11_FILENAME}{.001,.002,.003,.004,.005,.006}"
 #  |-----> Win 10
 #  |--------> FOR LINUX
-LINUX_TEN_EDGE_FILENAME="Microsoft%20Edge.Win10.For.Linux.VirtualBox.zip"
-LINUX_TEN_EDGE_URL="http://az792536.vo.msecnd.net/vms/VMBuild_20150801/VirtualBox/MSEdge/Linux/${LINUX_TEN_EDGE_FILENAME}{.001,.002,.003,.004,.005,.006}"
+LINUX_TEN_EDGE_FILENAME="MSEdge.Win10TH2.VirtualBox.zip"
+LINUX_TEN_EDGE_URL="https://az792536.vo.msecnd.net/vms/VMBuild_20160322/VirtualBox/MSEdge/${LINUX_TEN_EDGE_FILENAME}"
+
 #  |--------> FOR MAC
-OSX_TEN_EDGE_FILENAME="Microsoft%20Edge.Win10.For.Windows.VirtualBox.zip"
-OSX_TEN_EDGE_URL="http://az792536.vo.msecnd.net/vms/VMBuild_20150801/VirtualBox/MSEdge/Windows/${OSX_LINUX_TEN_EDGE_FILENAME}{.001,.002,.003,.004,.005,.006}"
+OSX_TEN_EDGE_FILENAME="MSEdge.Win10TH2.VirtualBox.zip"
+OSX_TEN_EDGE_URL="https://az792536.vo.msecnd.net/vms/VMBuild_20160322/VirtualBox/MSEdge/${OSX_TEN_EDGE_FILENAME}"
 #  |
 #  |Guest Machine
 #  |--> Config
 VM_MEM="1024"
 VM_MEM_XP="512"
-LINUX_VM_NIC_BRIDGE="eth0"
-MAC_VM_NIC_BRIDGE="en0"
+#  |---> Mac and Linux network config
+#  |----> FOR MAC
+if [[ $OSTYPE = darwin* ]]; then
+	VM_NIC_BRIDGE="en0"
+#  |----> FOR LINUX
+else
+	VM_NIC_BRIDGE="eth0"
+fi
 VM_CREATE_SNAPSHOT=False
 #  |--> Paths
+VM_LOG_PATH="C:/Logs/"
 VM_TEMP_PATH="C:/Temp/"
+}
