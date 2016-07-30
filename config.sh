@@ -71,7 +71,7 @@ OSX_SEVEN_8_URL="http://virtualization.modern.ie/vhd/VMBuild_20141027/VirtualBox
 OSX_SEVEN_9_FILENAME="IE9.Win7.For.Windows.VirtualBox.zip"
 OSX_SEVEN_9_URL="http://virtualization.modern.ie/vhd/VMBuild_20141027/VirtualBox/IE9/Windows/${OSX_SEVEN_9_FILENAME}{.001,.002,.003,.004}"
 OSX_SEVEN_10_FILENAME="IE10.Win7.For.Windows.VirtualBox.zip"
-OSX_="http://virtualization.modern.ie/vhd/VMBuild_20141027/VirtualBox/IE10/Windows/${OSX_SEVEN_10_FILENAME}{.001,.002,.003,.004}"
+OSX_SEVEN_10_URL="http://virtualization.modern.ie/vhd/VMBuild_20141027/VirtualBox/IE10/Windows/${OSX_SEVEN_10_FILENAME}{.001,.002,.003,.004}"
 OSX_SEVEN_11_FILENAME="IE11.Win7.For.Windows.VirtualBox.zip"
 OSX_SEVEN_11_URL="http://virtualization.modern.ie/vhd/VMBuild_20141027/VirtualBox/IE11/Windows/${OSX_SEVEN_11_FILENAME}{.001,.002,.003,.004}"
 #  |-----> Win 8 & 8.1
