@@ -125,8 +125,8 @@ fetch_chrome() {
 }
 
 fetch_nginx(){
-
     fetch ${NGINX_FILENAME} ${TOOLS_PATH} ${NGINX_URL}
+    # Will not unzip since VBoxmage won't copy whole folders from host to guest
 }
 
 fetch_dependencies() {
@@ -153,9 +153,6 @@ fetch_virtual_machine() {
     curl -# -O -L "${!resource_url}"
     cat "${!resource_filename}"* > "${VMS_PATH}${!resource_filename}"
     rm "${!resource_filename}"*
-
-    log "Will unzip ${VMS_PATH}${!resource_filename} to ${VMS_PATH}"
-    unzip "${VMS_PATH}${!resource_filename}" -d "${VMS_PATH}"
 }
 
 # Virtual machine Assistant
@@ -254,11 +251,6 @@ select_browser() {
 
 # Starts an assistant to select the VM the user wishes to download
 start_virtual_machine_assistant() {
-    # Display title bar
-    echo -e "${CYAN}BoxIE (pronounced bok-see)"
-    echo -e "${MAGENTA}=========================="
-    echo -e "${NOCOLOR}"
-
     echo -e "Virtual machine download assistant...     ${GREEN}[STARTED]${NOCOLOR}"
     echo ""
     echo "Looks like you are trying to to download Windows virtual machine (Virtual Box)."
@@ -336,6 +328,11 @@ else
 
     # Execute eval set for proper format
     eval set -- "$ARGS";
+
+    # Display title bar
+    echo -e "${CYAN}BoxIE (pronounced bok-see)"
+    echo -e "${MAGENTA}=========================="
+    echo -e "${NOCOLOR}"
 
     # Parse options
     while true; do
